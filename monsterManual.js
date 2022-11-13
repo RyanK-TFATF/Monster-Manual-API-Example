@@ -1,10 +1,19 @@
-// Monster Manual API -- Array Version 
-// v0.3a
+// Monster Manual API -- 
+// v0.4a
 
 // Requirements for Express
 const express = require('express');
 const app = express(); 
 const port = 4001
+
+// Requirements for MySQL
+const mysql = require('mysql')
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user 'dbdesigner1',
+    password: 'dPY8nyoS#Xh%',
+    database: 'monsterManual'
+})
 
 // Monster Names
 const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
