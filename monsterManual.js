@@ -1,5 +1,5 @@
 // Monster Manual API
-// v0.2
+// v0.2d
 
 // Requirements for Express
 const express = require('express');
@@ -7,7 +7,7 @@ const app = express();
 const port = 4001
 
 // Monster Names
-const monstersArr = ['goblin', 'dragon', 'zombie'];
+const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
 
 // Serve Static Files
 // app.use(express.static('public'))
@@ -17,21 +17,21 @@ app.post('/', (req, res) =>  {
     res.send('Got a POST request.')
 })
 
-// Read (GET) -- Display all monsters in with / request. 
+// Read (GET) -- ROOT PATH REQ. Display welcome message, log all monsters to console.
 app.get('/', (req, res) => {
     res.send('Welcome to the Monster Manual\n')    
-    // res.status(200).send('OK'); <-- Do I need this?
     // Log Monsters to Console
     for (let i = 0; i < monstersArr.length; i++) {
         console.log(`The monster as index ${i} is ${monstersArr[i]}.`)
     }  
 })
 
-// GET -- Monster by :id 
+// GET -- ID REQ. -- Send string with monster name, log to console. 
 app.get('/monsters/:id', (req, res, next) => {
-    let monsterIndex = monstersArr[req.params.id];
-    //res.send(`${monstersArr[monsterIndex]}\n`)    
+    let monsterIndex = monstersArr[req.params.id];        
     res.send(`The monster with ID # ${req.params.id} is ${monsterIndex}`);     
+    res.status(200).send();
+    console.log(`The monster ${monsterIndex} was found.`);    
 })
 
 
