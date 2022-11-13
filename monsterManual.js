@@ -1,5 +1,5 @@
 // Monster Manual API
-// v0.2d
+// v0.2e
 
 // Requirements for Express
 const express = require('express');
@@ -28,10 +28,16 @@ app.get('/', (req, res) => {
 
 // GET -- ID REQ. -- Send string with monster name, log to console. 
 app.get('/monsters/:id', (req, res, next) => {
-    let monsterIndex = monstersArr[req.params.id];        
-    res.send(`The monster with ID # ${req.params.id} is ${monsterIndex}`);     
-    res.status(200).send();
-    console.log(`The monster ${monsterIndex} was found.`);    
+    if (typeof monstersArr[req.params.id] === 'undefined') {
+        res.send('That monster ID does not exist, please try again.');
+        res.status(404).send();
+        console.log('Index did not exist.');
+    } else {
+        let monsterIndex = monstersArr[req.params.id];        
+        res.send(`The monster with ID # ${req.params.id} is ${monsterIndex}`);     
+        res.status(200).send();
+        console.log(`The monster ${monsterIndex} was found.`);    
+    }  
 })
 
 
