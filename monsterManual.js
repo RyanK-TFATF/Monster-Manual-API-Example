@@ -1,5 +1,5 @@
 // Monster Manual API
-// v0.2h
+// v0.3a
 
 // Requirements for Express
 const express = require('express');
@@ -9,7 +9,8 @@ const port = 4001
 // Monster Names
 const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
 
-// Create (POST) -- Template
+// Create (POST) -- Create New Monster
+// WORKING -- 11/13/22 @ 12:02AM
 app.post('/monsters/:id', (req, res, next) =>  {
     // Check to see if the monster ID doesn't exist AND it is the next sequential number. 
     if (typeof monstersArr[req.params.id] === 'undefined' && req.params.id == monstersArr.length + 1 ) {
@@ -27,7 +28,7 @@ app.post('/monsters/:id', (req, res, next) =>  {
 })
 
 // (GET) -- ROOT PATH REQ. Display welcome message, log all monsters to console.
-// Currently works as intended. 11/12/12 @ 10:48PM
+// WORKING -- 11/13/22 @ 12:02AM
 app.get('/', (req, res) => {
     res.send('Welcome to the Monster Manual\n')    
     // Log Monsters to Console
@@ -37,7 +38,7 @@ app.get('/', (req, res) => {
 })
 
 // GET -- ID REQ. -- Send string with monster name, log to console. 
-// Currently works as intended. 11/12/12 @ 10:48PM
+// WORKING -- 11/13/22 @ 12:02AM
 app.get('/monsters/:id', (req, res, next) => {
     if (typeof monstersArr[req.params.id] === 'undefined') {
         res.send('That monster ID does not exist, please try again.');
@@ -52,6 +53,7 @@ app.get('/monsters/:id', (req, res, next) => {
 })
 
 // Update (PUT) Update monster by ID. 
+// WORKING -- 11/13/22 @ 12:02AM
 app.put('/monsters/:id', (req, res, next) =>  {
     if (typeof monstersArr[req.params.id] === 'undefined') {
         res.send('That monster cannot be updated as it does not exist.  Please try again.')
@@ -67,9 +69,20 @@ app.put('/monsters/:id', (req, res, next) =>  {
     }   
 })
 
-// Delete (DELETE) Template
-app.delete('/user', (req, res) => {
-    res.send('Got a DELETE request at /user')
+// Delete (DELETE) Monster Deletion
+// WORKING -- 11/13/22 @ 12:02AM
+app.delete('/monsters/:id', (req, res) => {
+    if (typeof monstersArr[req.params.id] === 'undefined') {
+        res.send('That monster cannot be deleted as it does not exist.  Please try again.')
+        console.log('Monster ID does not exist, cannot delete.');
+    } else {        
+        const monsterID = req.params.id;
+        const deletedMonsterName = monstersArr[monsterID];
+        const indexToSplice = req.params.id; 
+        monstersArr.splice(indexToSplice, 1);
+        console.log(`ID#${monsterID} ${deletedMonsterName} was deleted.`);     
+        res.send(`ID#${monsterID} ${deletedMonsterName} was deleted.`);             
+    }  
   })
   
 // Start Server on 4001
