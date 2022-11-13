@@ -1,5 +1,5 @@
-// Monster Manual API
-// v0.3a
+// Monster Manual API -- MySQL Version 
+// v0.0a
 
 // Requirements for Express
 const express = require('express');
