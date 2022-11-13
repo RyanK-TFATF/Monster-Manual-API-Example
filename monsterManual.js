@@ -15,6 +15,7 @@ app.post('/', (req, res) =>  {
 })
 
 // Read (GET) -- ROOT PATH REQ. Display welcome message, log all monsters to console.
+// Currently works as intended. 11/12/12 @ 10:48PM
 app.get('/', (req, res) => {
     res.send('Welcome to the Monster Manual\n')    
     // Log Monsters to Console
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 })
 
 // GET -- ID REQ. -- Send string with monster name, log to console. 
+// Currently works as intended. 11/12/12 @ 10:48PM
 app.get('/monsters/:id', (req, res, next) => {
     if (typeof monstersArr[req.params.id] === 'undefined') {
         res.send('That monster ID does not exist, please try again.');
