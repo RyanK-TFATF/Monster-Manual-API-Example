@@ -1,5 +1,5 @@
 // Monster Manual API
-// v0.2e
+// v0.2f
 
 // Requirements for Express
 const express = require('express');
@@ -8,9 +8,6 @@ const port = 4001
 
 // Monster Names
 const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
-
-// Serve Static Files
-// app.use(express.static('public'))
 
 // Create (POST) -- Template
 app.post('/', (req, res) =>  {
