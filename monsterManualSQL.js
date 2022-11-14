@@ -1,5 +1,5 @@
 // Monster Manual API -- 
-// v0.4a
+// v0.5a
 
 // Requirements for Express
 const express = require('express');
@@ -8,42 +8,54 @@ const port = 4001
 
 // Requirements for MySQL
 const mysql = require('mysql')
-const connection = mysql.createConnection({
+const dBase = mysql.createConnection({
     host: 'localhost',
-    user 'dbdesigner1',
-    password: 'dPY8nyoS#Xh%',
-    database: 'monsterManual'
+    user: 'dbdesigner1',
+    password: 'dPY8nyoS#Xh%', // How is this secure storing in plain text? 
+    database: 'monstermanual'
 })
+
+dBase.connect((err) => {
+    if (err) throw err; 
+    console.log('Connected to localhost database.');
+}); 
+
 
 // Monster Names
 const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
 
 // Create (POST) -- Create New Monster
 // WORKING -- 11/13/22 @ 12:02AM
-app.post('/monsters/:id', (req, res, next) =>  {
-    // Check to see if the monster ID doesn't exist AND it is the next sequential number. 
-    if (typeof monstersArr[req.params.id] === 'undefined' && req.params.id == monstersArr.length + 1 ) {
-        res.send('That monster was not found and ID number is next in line, adding now...');
-        const monsterID = req.params.id;
-        const monsterName = req.query.name; // Fix to pull actual name from string. FIXED. SO PROUD.
-        monstersArr.push(monsterName);        
-        console.log(`${monsterName} was added at ID#${monsterID}.`);
-        res.status(200).send();        
-    } else {
-        res.send('A monster either exists at that ID number or the ID number is not sequential. Please try again.');        
-        res.status(400).send();
-        console.log('Monster ID already exists.');
-    }   
+app.post('/monsters/:id', (req, res, next) =>  {    
+    let insertQuery = `INSERT INTO test_table0 (monsterID, monsterName) VALUES (${req.params.id}, ${req.query.name})`;
+    dBase.query((insertQuery, err, res) => {
+        if (err) {
+            console.log(err);
+            return;
+        } else {
+            // res.send(`New Monster created in test_table0.`);
+            console.log('Value added successfully.');
+        }    
+    })   
+    res.send(`test_table0 updated with monsterID:${req.params.id} and monsterName:${req.query.name}`)         
 })
 
 // (GET) -- ROOT PATH REQ. Display welcome message, log all monsters to console.
 // WORKING -- 11/13/22 @ 12:02AM
 app.get('/', (req, res) => {
-    res.send('Welcome to the Monster Manual\n')    
-    // Log Monsters to Console
+    /*
+    res.send('Welcome to the Monster Manual\n')        
     for (let i = 0; i < monstersArr.length; i++) {
         console.log(`The monster as index ${i} is ${monstersArr[i]}.`)
     }  
+    */ 
+   let sql = 'SELECT * FROM test_table0'; // SELECT <VALUE> FROM <tableName>
+   dBase.query(sql, (err, result) => {
+    if (err) throw err;
+    console.log(result);
+    res.send(result);
+   })
+
 })
 
 // GET -- ID REQ. -- Send string with monster name, log to console. 
