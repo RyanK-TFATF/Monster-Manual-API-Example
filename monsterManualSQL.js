@@ -25,7 +25,7 @@ dBase.connect((err) => {
 const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
 
 // Create (POST) -- Create New Monster
-// WORKING -- 11/13/22 @ 12:02AM
+// Sort Of Working -- Postman calls will return success message, but data is not actually posting to the database.  
 app.post('/monsters/:id', (req, res, next) =>  {    
     let insertQuery = `INSERT INTO test_table0 (monsterID, monsterName) VALUES (${req.params.id}, ${req.query.name})`;
     dBase.query((insertQuery, err, res) => {
