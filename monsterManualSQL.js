@@ -22,12 +22,12 @@ dBase.connect((err) => {
 
 
 // Monster Names
-const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
+// const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
 
 // Create (POST) -- Create New Monster
 // Sort Of Working -- Postman calls will return success message, but data is not actually posting to the database.  
 app.post('/monsters/:id', (req, res, next) =>  {    
-    let insertQuery = `INSERT INTO test_table0 (monsterID, monsterName) VALUES (${req.params.id}, ${req.query.name})`;
+    let insertQuery = `INSERT INTO test_table0 (monsterID, monsterName) VALUES ('${req.params.id}', 'Test Monster')`;
     dBase.query((insertQuery, err, res) => {
         if (err) {
             console.log(err);
@@ -37,7 +37,7 @@ app.post('/monsters/:id', (req, res, next) =>  {
             console.log('Value added successfully.');
         }    
     })   
-    res.send(`test_table0 updated with monsterID:${req.params.id} and monsterName:${req.query.name}`)         
+    res.send(`test_table0 updated with monsterID:${req.params.id} and monsterName: Test Monster`)         
 })
 
 // (GET) -- ROOT PATH REQ. Display welcome message, log all monsters to console.
@@ -58,8 +58,8 @@ app.get('/', (req, res) => {
 
 })
 
-// GET -- ID REQ. -- Send string with monster name, log to console. 
-// WORKING -- 11/13/22 @ 12:02AM
+/* GET -- ID REQ. -- Send string with monster name, log to console. 
+WORKING -- 11/13/22 @ 12:02AM
 app.get('/monsters/:id', (req, res, next) => {
     if (typeof monstersArr[req.params.id] === 'undefined') {
         res.send('That monster ID does not exist, please try again.');
@@ -72,9 +72,9 @@ app.get('/monsters/:id', (req, res, next) => {
         console.log(`The monster ${monsterIndex} was found.`);    
     }  
 })
+*/
 
-// Update (PUT) Update monster by ID. 
-// WORKING -- 11/13/22 @ 12:02AM
+/* Update (PUT) Update monster by ID. 
 app.put('/monsters/:id', (req, res, next) =>  {
     if (typeof monstersArr[req.params.id] === 'undefined') {
         res.send('That monster cannot be updated as it does not exist.  Please try again.')
@@ -89,22 +89,25 @@ app.put('/monsters/:id', (req, res, next) =>  {
         
     }   
 })
+*/
 
 // Delete (DELETE) Monster Deletion
 // WORKING -- 11/13/22 @ 12:02AM
 app.delete('/monsters/:id', (req, res) => {
-    if (typeof monstersArr[req.params.id] === 'undefined') {
-        res.send('That monster cannot be deleted as it does not exist.  Please try again.')
-        console.log('Monster ID does not exist, cannot delete.');
-    } else {        
-        const monsterID = req.params.id;
-        const deletedMonsterName = monstersArr[monsterID];
-        const indexToSplice = req.params.id; 
-        monstersArr.splice(indexToSplice, 1);
-        console.log(`ID#${monsterID} ${deletedMonsterName} was deleted.`);     
-        res.send(`ID#${monsterID} ${deletedMonsterName} was deleted.`);             
-    }  
-  })
+    let deleteQuery = `DELETE FROM test_table0 WHERE monsterID = ${req.params.id}`; 
+    dBase.query((deleteQuery, err, res) =>  {
+        if (err) {
+            console.log(err);
+            return;
+        } else {            
+            console.log('Value deleted successfully.');
+        }    
+    })   
+    res.send(`monsterID:${req.params.id} DELETED from test_table0.`);   
+
+    })
+    
+  
   
 // Start Server on 4001
 app.listen(port, () => {
