@@ -3,8 +3,10 @@
 
 // Requirements for Express
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express(); 
 const port = 4001
+app.use(bodyParser.json()); 
 
 // Requirements for MySQL
 const mysql = require('mysql')
@@ -14,35 +16,35 @@ const dBase = mysql.createConnection({
     password: 'dPY8nyoS#Xh%', // How is this secure storing in plain text? 
     database: 'monstermanual'
 })
+console.log(process.env.CPU); 
 
 dBase.connect((err) => {
     if (err) throw err; 
     console.log('Connected to localhost database.');
 }); 
 
-
-// Monster Names
-// const monstersArr = ['Goblin', 'Dragon', 'Zombie', 'Beholder'];
-
 // Create (POST) -- Create New Monster
 // Sort Of Working -- Postman calls will return success message, but data is not actually posting to the database.  
-app.post('/monsters/:id', (req, res, next) =>  {    
-    let insertQuery = `INSERT INTO test_table0 (monsterID, monsterName) VALUES ('${req.params.id}', 'Test Monster')`;
-    dBase.query((insertQuery, err, res) => {
-        if (err) {
-            console.log(err);
-            return;
+app.post('/monsters', (req, res, next) =>  {    // variable names are clashing.  
+    const body = req.body
+    console.log('The body is',  body)
+    let insertQuery = `INSERT INTO test_table0 (monsterName) VALUES ('${body.monsterName}')`;
+    
+    dBase.query(insertQuery, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+            res.status(500).send(`Warning! INSERT failed.`)   
         } else {
             // res.send(`New Monster created in test_table0.`);
-            console.log('Value added successfully.');
+            console.log('Value added successfully.', results);
+            res.status(200).send(`test_table0 updated with new monster name: ${body.monsterName}`)                 
         }    
     })   
-    res.send(`test_table0 updated with monsterID:${req.params.id} and monsterName: Test Monster`)         
 })
 
 // (GET) -- ROOT PATH REQ. Display welcome message, log all monsters to console.
 // WORKING -- 11/13/22 @ 12:02AM
-app.get('/', (req, res) => {
+app.get('/monsters', (req, res) => {
     /*
     res.send('Welcome to the Monster Manual\n')        
     for (let i = 0; i < monstersArr.length; i++) {
@@ -58,56 +60,22 @@ app.get('/', (req, res) => {
 
 })
 
-/* GET -- ID REQ. -- Send string with monster name, log to console. 
-WORKING -- 11/13/22 @ 12:02AM
-app.get('/monsters/:id', (req, res, next) => {
-    if (typeof monstersArr[req.params.id] === 'undefined') {
-        res.send('That monster ID does not exist, please try again.');
-        res.status(404).send(); // Not Needed?
-        console.log('Index did not exist.');
-    } else {
-        let monsterIndex = monstersArr[req.params.id];        
-        res.send(`The monster with ID # ${req.params.id} is ${monsterIndex}`);     
-        res.status(200).send(); // Not Needed?
-        console.log(`The monster ${monsterIndex} was found.`);    
-    }  
-})
-*/
-
-/* Update (PUT) Update monster by ID. 
-app.put('/monsters/:id', (req, res, next) =>  {
-    if (typeof monstersArr[req.params.id] === 'undefined') {
-        res.send('That monster cannot be updated as it does not exist.  Please try again.')
-        console.log('Monster ID does not exist, cannot update.');
-    } else {        
-        const monsterID = req.params.id;
-        const oldMonsterName = monstersArr[monsterID];
-        const newMonsterName = req.query.name; // Fix to pull actual name from string. FIXED. SO PROUD.
-        monstersArr[monsterID] = newMonsterName;        
-        console.log(`ID#${monsterID} was changed from ${oldMonsterName} to ${newMonsterName}.`);     
-        res.send(`ID#${monsterID} was changed from ${oldMonsterName} to ${newMonsterName}.`);     
-        
-    }   
-})
-*/
-
 // Delete (DELETE) Monster Deletion
 // WORKING -- 11/13/22 @ 12:02AM
-app.delete('/monsters/:id', (req, res) => {
-    let deleteQuery = `DELETE FROM test_table0 WHERE monsterID = ${req.params.id}`; 
-    dBase.query((deleteQuery, err, res) =>  {
+app.delete('/monsters/:id', (req, res) => {    
+    let deleteQuery = `DELETE FROM test_table0 WHERE monsterID = '${req.params.id}'`; 
+    dBase.query(deleteQuery, (err, _res) =>  {
         if (err) {
             console.log(err);
-            return;
+            res.status(500).send(`Critical error.`);   
         } else {            
             console.log('Value deleted successfully.');
+            res.status(200).send(`monsterID:${req.params.id} DELETED from test_table0.`);   
         }    
     })   
-    res.send(`monsterID:${req.params.id} DELETED from test_table0.`);   
-
-    })
     
-  
+
+    }) 
   
 // Start Server on 4001
 app.listen(port, () => {
